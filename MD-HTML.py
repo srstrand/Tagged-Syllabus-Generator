@@ -10,15 +10,10 @@ import sys
 #================
 
 #TODO
+#How to close list when at the end of the file??
 #Figure out what to do about extraneous line breaks in the middle of paragraphs
-#Catch escape characters: % (comments), $(math mode!)
-	#Turn $$.*$$ into \[ .* \]
-	#Turn un-escaped $.*$ into \( .* \)
-	#Turn escaped \$ into $
-	#Turn un-escaped % into comments
-	#Turn escaped \% into %
-#optional inclusion of mathjax script if 'math mode' detected in document
 #================
+
 #Function defs
 def buildList(prefix,tabCount,listLevel,line):
 	#Strip the bullet/digit and space, create list item
@@ -289,6 +284,14 @@ with open(fileName + ".md","r") as f:
 			#write new 'line' out to file
 			g.write(line)
 
+#Just in case the file ended on a list item
+if listLevel:
+	with open(fileName + ".html","a") as g:
+		emptyLine = True
+		line = ''
+		g.write(listWrapup(tabCount,listLevel,line))
+
+
 #include mathjax header if math mode found in document
 mathjax = '\t<script type="text/javascript" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">\n\t</script>' if mathMode else ''
 #Define the HTML header
@@ -312,6 +315,7 @@ header = ("<!DOCTYPE html>\n\n"
 	'			font-size: 1.4vw;\n'
 	'			margin-left: 15px\n\t\t}\n'
 	'		a { color: cyan;}\n'
+	'		tr:nth-child(even) {background-color: #626262;}\n'
 	'	</style>\n'
 	+ mathjax +
 	'	\n'
