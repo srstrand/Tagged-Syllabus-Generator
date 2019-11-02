@@ -6,7 +6,7 @@ This script was designed specifically for generating academic syllabi that are A
 
 Currently the default is a dark background with white text, but I hope to make that a user option in the future.
 
-## Support Markdown
+## Supported Markdown
 Currently this script will convert \*italics\* or \_italics\_, \*\*bold\*\* or \_\_bold\_\_, and \-\-strikethrough\-\-. It will also convert both ordered lists (any digit followed by a '.') and unordered lists (using any combination of \*, \-, or \+ ) in any combination of nesting up to any level. Basic tables (with or without a header row) are also supported. Anything following an un-escaped percent sign will be treated as a comment (up to the end of the line). Finally, the script will automatically insert the 'mathjax.js' code if any LaTeX-style math modes are detected in the document; you can delimit math mode with either un-escaped dollar signs, or with \\( \\), \\[ \\].
 
 Literal dollar signs and percents can be included by escaping them with a backslash '\\' character.
