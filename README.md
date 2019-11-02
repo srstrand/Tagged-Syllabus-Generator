@@ -7,7 +7,7 @@ This script was designed specifically for generating academic syllabi that are A
 Currently the default is a dark background with white text, but I hope to make that a user option in the future.
 
 ## Supported Markdown
-Currently this script will convert
+Currently this script supports the following markdown:
 * \*italics\* or \_italics\_, \*\*bold\*\* or \_\_bold\_\_, and \-\-strikethrough\-\-. 
 * Both ordered lists (any digit followed by a '.') and unordered lists (using any combination of \*, \-, or \+ ) in any combination of nesting up to any level. 
 * Basic tables (with or without a header row) are also supported.
