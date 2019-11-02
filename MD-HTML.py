@@ -6,11 +6,12 @@
 import os
 
 import re
+import tkinter as tk
+from tkinter import filedialog, messagebox
 import sys
 #================
 
 #TODO
-#How to close list when at the end of the file??
 #Figure out what to do about extraneous line breaks in the middle of paragraphs
 #================
 
@@ -82,17 +83,58 @@ def insertHeaderInfo(key):
 	return headersDict[key] if headersDict.get(key) else "[missing " + key + "]"
 #================
 
+
+#================
+#Variables to be used in main loop
+#Keep track of level of nested lists
 listLevel = []
+
+#counter for the main 'for' loop through the file
 i = 0
+
+#Number of tabs at the beginning of the line
 tabCount = [0]
+
+#Are we processing metadata?
 meta = False
+
+#Dictionary of header items
 headersDict = {}
+
+#Does math mode appear anywhere in the file?
 mathMode = False
 
-fileName = "Syllabus-Template"
+#full path, full filename, filename w/o extension
+filePath = ''
+fileName = ''
+fileBaseName = ''
 
-with open(fileName + ".md","r") as f:
-	with open(fileName + ".html","w") as g:
+#True if extension is anything but 'md' for markdown
+invalidExt = True
+#================
+
+#================
+#Have the user select the file to be processed
+while invalidExt:
+	root = tk.Tk()
+	root.withdraw()
+
+	filePath = filedialog.askopenfilename()
+	
+	if filePath.split(".")[-1] == "md":
+		invalidExt = False 
+	else:
+		invalidExt = True
+		messagebox.showerror("Filetype Error","Please select a Markdown file with extention '.md'")
+
+fileName = filePath.split("/")[-1]
+fileBaseName = fileName.rsplit(".",1)[0]
+#================
+print("OK!")
+quit()
+
+with open(fileName,"r") as f:
+	with open(fileBaseName + ".html","w") as g:
 		for line in f:
 			i += 1
 			#search line
@@ -286,7 +328,7 @@ with open(fileName + ".md","r") as f:
 
 #Just in case the file ended on a list item
 if listLevel:
-	with open(fileName + ".html","a") as g:
+	with open(fileBaseName + ".html","a") as g:
 		emptyLine = True
 		line = ''
 		g.write(listWrapup(tabCount,listLevel,line))
@@ -325,6 +367,6 @@ header = ("<!DOCTYPE html>\n\n"
 	)
 
 #Write out header and closing tags
-with open(fileName + ".html","r") as f: data = f.read()
-with open(fileName + ".html","w") as g:
+with open(fileBaseName + ".html","r") as f: data = f.read()
+with open(fileBaseName + ".html","w") as g:
 	g.write(header+data+"\n</body>\n</html>")
