@@ -14,7 +14,7 @@ Section 02 Holt 189, MoWeThFr 3:00PM - 3:50PM
 
 ## Contact Information and Office Hours
 
-[Edward A. Roualdes](mailto:eroualdes@csuchico.edu)
+[Phil Connors](mailto:likethegroundhogphil@pitt.edu)
 
 Office Hours:
 
