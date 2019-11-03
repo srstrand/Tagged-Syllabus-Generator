@@ -130,9 +130,9 @@ while invalidExt:
 fileName = filePath.split("/")[-1]
 fileBaseName = fileName.rsplit(".",1)[0]
 #================
-print("OK!")
-quit()
 
+
+#Main loop through the input file
 with open(fileName,"r") as f:
 	with open(fileBaseName + ".html","w") as g:
 		for line in f:
