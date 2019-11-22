@@ -13,6 +13,8 @@ import sys
 
 #TODO
 #Figure out what to do about extraneous line breaks in the middle of paragraphs
+#Catch errors in header syntax (e.g., the scripts quits on the 'key, value' line if there is a blank line in the header section)
+#underscores appear in urls and in code snippets. Maybe only grab single underscores that follow a space or a star?
 #================
 
 #Function defs
@@ -155,7 +157,6 @@ with open(fileName,"r") as f:
 			tabCount.append(0)
 
 		#Get metadata
-			#Change formatting of metadata section to match yaml, standard markdown
 			if re.match(r'-{3}',line):
 				if meta:
 					meta = False
@@ -241,22 +242,13 @@ with open(fileName,"r") as f:
 
 		#Match formatting markup
 			#Match a double **, for 'strong'
-			matches = tuple(re.findall(r'(?:\*{2}|_{2})',line))
+			matches = tuple(re.findall(r'[\*_]{2}',line))
 			if matches:
 				for x in matches:
 					#if markdown found, replace in 'line'
 					#you can also use '\g<n>' to match the nth saved group
 					#Match double *s or _s for 'strong'
-					line = re.sub(r'^(.*)\*{2}(.*?)\*{2}(.*)$',r'\1<strong>\2</strong>\3',line)
-					
-			#Match a double __, for 'strong'
-			matches = tuple(re.findall(r'_{2}',line))
-			if matches:
-				for x in matches:
-					#if markdown found, replace in 'line'
-					#you can also use '\g<n>' to match the nth saved group
-					#Match double *s or _s for 'strong'
-					line = re.sub(r'^(.*)_{2}(.*?)_{2}(.*)$',r'\1<strong>\2</strong>\3',line)
+					line = re.sub(r'[\*_]{2}(.*?)[\*_]{2}',r'<strong>\1</strong>',line)
 					
 			#Match a single * not followed by a space, for 'emphasis'
 			matches = tuple(re.findall(r'\*(?! )',line))
@@ -265,16 +257,16 @@ with open(fileName,"r") as f:
 					#if markdown found, replace in 'line'
 					#you can also use '\g<n>' to match the nth saved group
 					#Match single *s for 'emphasis'
-					line = re.sub(r'^(.*)\*(?! )(.*?)\*(.*)$',r'\1<em>\2</em>\3',line)
+					line = re.sub(r'\*(?! )(.*?)\*',r'<em>\1</em>',line)
 				
 			#Match a single _, for 'emphasis'
-			matches = tuple(re.findall(r'_',line))
+			matches = tuple(re.findall(r'(?<= )_',line))
 			if matches:
 				for x in matches:
 					#if markdown found, replace in 'line'
 					#you can also use '\g<n>' to match the nth saved group
 					#Match single *s for 'emphasis'
-					line = re.sub(r'^(.*)_(.*?)_(.*)$',r'\1<em>\2</em>\3',line)
+					line = re.sub(r'(?<= )_(.*?)_',r'<em>\1</em>',line)
 				
 			#Match a ~~, for 'strikethrough'
 			matches = tuple(re.findall(r'\~{2}',line))
@@ -283,7 +275,7 @@ with open(fileName,"r") as f:
 					#if markdown found, replace in 'line'
 					#you can also use '\g<n>' to match the nth saved group
 					#Match double ~~s for 'strikethrough'
-					line = re.sub(r'^(.*)\~{2}(.*?)\~{2}(.*)$',r'\1<s>\2</s>\3',line)
+					line = re.sub(r'\~{2}(.*?)\~{2}',r'<s>\1</s>',line)
 				
 		#Match links
 			matches = tuple(re.findall(r'\]\(',line))
@@ -297,7 +289,7 @@ with open(fileName,"r") as f:
 
 			#Now match raw links appearing in the line
 			if re.search(r'.*(?<!")http',line):
-				line = re.sub(r'(?<!")(http[^ ]+)',r'<a href="\1">\1</a>',line)
+				line = re.sub(r'(?<!")(http[^\s,<]+)',r'<a href="\1">\1</a>',line)
 
 		#Finally, detect any LaTeX-style math modes, and convert escaped characters
 			#Match exactly two literal dollar signs ('display math mode')
